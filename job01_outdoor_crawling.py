@@ -162,3 +162,4 @@ for j in range(4):      # 한 페이지당 장소 30개, 총 4페이지  -> 장�
 
         # locations.append(location)
     # driver.find_element('xpath','//*[@id="lithium-root"]/main/div[1]/div/div[3]/div/div[2]/div[2]/div[2]/div/div/div[2]/div/div[2]/div/div/section[40]/div/div[1]/div/div[1]/div[2]/div/a/svg').click()         # 다음페이지 넘어가기
+#1
