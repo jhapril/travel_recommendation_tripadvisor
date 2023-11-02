@@ -18,13 +18,6 @@ driver = webdriver.Chrome(service=service, options=options)  # <- options로 변
 
 url = 'https://www.tripadvisor.co.kr/Attractions-g4-Activities-c61-Europe.html'
 
-locations = []
-countrys = []
-addresses = []
-reviews = []
-
-df = pd.DataFrame()
-df_temp=[]
 for j in range(4):      # 한 페이지당 장소 30개, 총 4페이지  -> 장소 총 120개
     if j == 0:
         url = 'https://www.tripadvisor.co.kr/Attractions-g4-Activities-c61-Europe.html'
@@ -46,52 +39,45 @@ for j in range(4):      # 한 페이지당 장소 30개, 총 4페이지  -> 장�
 
         # 장소
         location = driver.find_element('xpath', '//*[@id="lithium-root"]/main/div[1]/div[2]/div[1]/header/div[3]/div[1]/div/h1').text
-        locations.append(location)
-        print(locations)
+        print(location)
 
         # 나라
         country = driver.find_element('xpath', '//*[@id="lithium-root"]/main/div[1]/div[1]/div/div/div[2]/a/span/span').text
-        countrys.append(country)
-        print(countrys)
+        print(country)
 
         # 링크
         address = driver.current_url
-        addresses.append(address)
-        print(addresses)
+        print(address)
 
         # 리뷰
         driver.find_element('xpath', '//*[@id="tab-data-qa-reviews-0"]/div/div[1]/div/div/div[2]/div/div/div[2]/div/div/div/button/div/span[1]').click()        # 모든 언어
-        time.sleep(2)
+        time.sleep(1)
         driver.find_element('xpath', '//*[@id="menu-item-ko"]/div/span').click()        # 한국어
-        time.sleep(3)
+        time.sleep(1)
 
         for l in range(20):     # 총 20페이지
             if l != 0 :
                 driver.find_element('xpath','//*[@id="tab-data-qa-reviews-0"]/div/div[5]/div/div[12]/div[1]/div/div[1]/div[2]/div/a').click()
+                time.sleep(1)
 
             for k in range(2, 12):      # 한페이지당 10, 총 20 페이지 -> 200개
                 try :
                     review1 = driver.find_element('xpath', '//*[@id="tab-data-qa-reviews-0"]/div/div[5]/div/div[{}]/div/div/div[3]/a/span/span'.format(k)).text
-                    time.sleep(2)
                     review2 = driver.find_element('xpath', '//*[@id="tab-data-qa-reviews-0"]/div/div[5]/div/div[{}]/div/div/div[5]/div[1]/div/span/span/span'.format(k)).text
-                    time.sleep(2)
 
                 except :
                     review1 = driver.find_element('xpath', '//*[@id="tab-data-qa-reviews-0"]/div/div[5]/div/div[{}]/div/div/div[3]/a/span/span'.format(k)).text
-                    time.sleep(2)
                     review2 = driver.find_element('xpath', '//*[@id="tab-data-qa-reviews-0"]/div/div[5]/div/div[{}]/div/div/div[4]/div[1]/div/span/span/span'.format(k)).text
-                    time.sleep(2)
 
                 finally :
                     review = review1 + ' ' + review2
-                    reviews.append(review)
                     print(review)
 
-                df_temp = pd.DataFrame({'location': locations, 'country': countrys, 'address': addresses, 'review': reviews})
-            df = df.append(df_temp, ignore_index=True)
-            df.to_csv("./crawling_data/crawlingdata_{}.csv".format('activity'), index=False, mode='a')
-                    # 다음 페이지 클릭 버튼
+                    df = pd.DataFrame(
+                        {'location': location, 'country': country, 'address': address, 'review': review}, [0])
+                    df.to_csv("./crawling_data/crawlingdata_{}.csv".format('activity'), mode='a', header=False, index=False)
 
+                    # 다음 페이지 클릭 버튼
             # print('error')
             # reviews=[]
             # driver.find_element('xpath','//*[@id="tab-data-qa-reviews-0"]/div/div[5]/div/div[12]/div[1]/div/div[1]/div[2]/div/a').click()       # 리뷰 다음페이지 클릭
@@ -162,4 +148,3 @@ for j in range(4):      # 한 페이지당 장소 30개, 총 4페이지  -> 장�
 
         # locations.append(location)
     # driver.find_element('xpath','//*[@id="lithium-root"]/main/div[1]/div/div[3]/div/div[2]/div[2]/div[2]/div/div/div[2]/div/div[2]/div/div/section[40]/div/div[1]/div/div[1]/div[2]/div/a/svg').click()         # 다음페이지 넘어가기
-#1
